@@ -14,7 +14,7 @@ DeliveBoo is a web app that allows users to order food for home delivery. Users 
 
 ## Technical Requirements
 
-- **Client-side Validation**: All user inputs are validated client-side.
+- **Validation**: All user inputs are validated client-side and server-side.
 - **Payment System**: Uses Braintree for payments.
 - **Responsive Design**: Accessible on both desktop and mobile devices.
 - **Search Without Refresh**: Restaurant search works without page refresh.
