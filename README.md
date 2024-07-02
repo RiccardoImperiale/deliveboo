@@ -1,5 +1,5 @@
 # DeliveBoo
-DeliveBoo is a web app that allows users to order food for home delivery in the city of ***. Users can search for and order their favorite foods from trusted restaurants, all from the comfort of their home.
+DeliveBoo is a web app that allows users to order food for home delivery. Users can search for and order their favorite foods from trusted restaurants, all from the comfort of their home.
 
 ![Alt Text](./frontend/public/design/boo-4.gif)
 
