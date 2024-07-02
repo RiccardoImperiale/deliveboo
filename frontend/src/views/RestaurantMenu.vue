@@ -400,7 +400,7 @@ export default {
 
         .socials {
             position: absolute;
-            bottom: 4rem;
+            bottom: 0;
             display: flex;
             align-items: center;
             justify-content: center;
