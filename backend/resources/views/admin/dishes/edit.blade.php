@@ -19,27 +19,36 @@
                     <div class="form_input">
                         <label for="name" class="form-label">{{ __('Name*') }}</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                            id="name" value="{{ old('name', $dish->name) }}" minlength="5" maxlength="100" />
+                            id="name" value="{{ old('name', $dish->name) }}" minlength="5" maxlength="100" required />
                         @error('name')
                             <div class="text-danger py-2">
                                 {{ $message }}
                             </div>
                         @enderror
+                        <div class="custom_error name_error"></div>
                     </div>
 
                     <div class="form_input d-flex align-items-center mb-3 mt-5">
-                        <div class="me-3" style="width: 140px; aspect-ratio: 1;">
-                            @if (Str::startsWith($dish->cover_image, 'https://'))
+                        @if ($dish->cover_image)
+                            <div class="me-3" style="width: 140px; aspect-ratio: 1;">
+                                @if (Str::startsWith($dish->cover_image, 'https://'))
+                                    <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
+                                        src="{{ $dish->cover_image }}" alt="{{ $dish->name }} image">
+                                @elseif (Str::startsWith($dish->cover_image, '/img'))
+                                    <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
+                                        src="{{ asset($dish->cover_image) }}" alt="{{ $dish->name }} image">
+                                @else
+                                    <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
+                                        src="{{ asset('storage/' . $dish->cover_image) }}"
+                                        alt="{{ $dish->name }} image">
+                                @endif
+                            </div>
+                        @else
+                            <div class="me-3" style="width: 140px; aspect-ratio: 1;">
                                 <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
-                                    src="{{ $dish->cover_image }}" alt="{{ $dish->name }} image">
-                            @elseif (Str::startsWith($dish->cover_image, '/img'))
-                                <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
-                                    src="{{ asset($dish->cover_image) }}" alt="{{ $dish->name }} image">
-                            @else
-                                <img class="rounded-circle" style="max-width: 100%; object-fit: cover; height: 100%;"
-                                    src="{{ asset('storage/' . $dish->cover_image) }}" alt="{{ $dish->name }} image">
-                            @endif
-                        </div>
+                                    src="{{ asset('img/default.png') }}" alt="{{ $dish->name }} image">
+                            </div>
+                        @endif
 
                         <div style="margin-top: 0;" class="form_input">
                             <label for="cover_image" class="form-label">{{ __('Cover Image') }}</label>
@@ -68,12 +77,13 @@
                     <div class="form_input">
                         <label for="price" class="form-label">{{ __('Price*') }}</label>
                         <input type="number" step="1.00" class="form-control @error('price') is-invalid @enderror"
-                            name="price" id="price" min='0' value="{{ old('price', $dish->price) }}" />
+                            name="price" id="price" min='0' value="{{ old('price', $dish->price) }}" required />
                         @error('price')
                             <div class="text-danger py-2">
                                 {{ $message }}
                             </div>
                         @enderror
+                        <div class="custom_error price_error"></div>
                     </div>
 
                     <div class="form_input mb-5 d-flex align-items-center gap-3">
@@ -135,4 +145,64 @@
 
         </form>
     </div>
+
+    <script>
+        const name = document.getElementById('name');
+        const price = document.getElementById('price')
+
+        document.querySelector('button[type="submit"]').addEventListener('click', (event) => {
+
+            if (validateName()) {
+                if (validatePrice()) {
+                    updateRequiredAttribute();
+                }
+            }
+
+        });
+        const nameError = document.querySelector('.custom_error.name_error');
+        const priceError = document.querySelector('.custom_error.price_error');
+
+
+        function validateName() {
+            if (name.validity.valueMissing) {
+                nameError.textContent = 'Name is required.';
+                name.style.borderColor = '#fb4848'
+                nameError.style.display = 'block';
+                return false;
+            } else if (name.validity.patternMismatch) {
+                nameError.textContent = 'Only alphanumeric characters and spaces are allowed.';
+                name.style.borderColor = '#fb4848'
+                nameError.style.display = 'block';
+                return false;
+            } else if (name.validity.tooShort || name.validity.tooLong) {
+                nameError.textContent = 'Name must be between 2 and 255 characters.';
+                name.style.borderColor = '#fb4848'
+                nameError.style.display = 'block';
+                return false;
+            } else {
+                name.style.borderColor = ''
+                nameError.style.display = 'none';
+                return true;
+            }
+        }
+
+        function validatePrice() {
+            if (price.validity.valueMissing) {
+                priceError.textContent = 'Price is required.';
+                price.style.borderColor = '#fb4848'
+                priceError.style.display = 'block';
+                return false;
+            } else if (price.validity.rangeUnderflow) {
+                priceError.textContent = 'Only positive numbers are allowed.';
+                price.style.borderColor = '#fb4848'
+                priceError.style.display = 'block';
+                return false;
+            } else {
+                price.style.borderColor = ''
+                priceError.style.display = 'none';
+                return true;
+            }
+        }
+    </script>
+
 @endsection
